@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Turn</title>
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript" src="http://www.turnjs.com/lib/turn.min.js"></script>
+</head>
+<body>
+
+	<div id="book">
+		<div class="hard"> Turn.js </div>
+		<div> Page Pre-filled 1 </div>
+		<div> Page Pre-filled 2 </div>
+		<div> Page Pre-filled 3 </div>
+		<div> Page Pre-filled 4 </div>
+	</div>
+	<script type="text/javascript">
+		$('#book').turn({pages: 1000});
+
+		$('#book').bind('turning', function(e, page) {
+			var range = $(this).turn('range', page);
+			for (page = range[0]; page<=range[1]; page++)
+				addPage(page, $(this));
+		});
+
+		function addPage(page, book) {
+   // Check if the page is not in the book
+   if (!book.turn('hasPage', page)) {
+    // Create an element for this page
+    var element = $('<div />').html('Loading…');
+    // Add the page
+    book.turn('addPage', element, page);
+    // Get the data for this page	
+    $.ajax({url: "page.php?page="+page})
+    .done(function(data) {
+    	element.html(data);
+    });
+  }
+}
+
+</script>
+
+
+</body>
+</html>
